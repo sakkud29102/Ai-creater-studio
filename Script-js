@@ -1,0 +1,71 @@
+async function generateScript() {
+  const topic = document.getElementById("topic").value;
+  const videoType = document.getElementById("videoType").value;
+  const language = document.getElementById("language").value;
+  const style = document.getElementById("style").value;
+  const result = document.getElementById("result");
+
+  if (!topic.trim()) {
+    result.innerHTML = "⚠️ Please enter a video topic first.";
+    return;
+  }
+
+  result.innerHTML = "🤖 AI is writing your script...";
+
+  try {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        topic,
+        videoType,
+        language,
+        style
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Something went wrong.");
+    }
+
+    result.innerHTML = `
+      <strong>✨ Your AI Script</strong><br><br>
+      ${data.script.replace(/\n/g, "<br>")}
+    `;
+
+  } catch (error) {
+    result.innerHTML = `
+      ❌ Error: ${error.message}<br><br>
+      Please try again.
+    `;
+  }
+}
+function generateAd() {
+  const product = document.getElementById("adProduct").value;
+  const audience = document.getElementById("adAudience").value;
+  const platform = document.getElementById("adPlatform").value;
+  const duration = document.getElementById("adDuration").value;
+  const style = document.getElementById("adStyle").value;
+  const result = document.getElementById("adResult");
+
+  if (!product.trim()) {
+    result.innerHTML = "⚠️ Please enter your product or service first.";
+    return;
+  }
+
+  result.innerHTML = `
+    <strong>📢 Advertisement Request Created</strong><br><br>
+
+    <strong>Product / Service:</strong> ${product}<br>
+    <strong>Target Audience:</strong> ${audience}<br>
+    <strong>Platform:</strong> ${platform}<br>
+    <strong>Duration:</strong> ${duration}<br>
+    <strong>Style:</strong> ${style}<br><br>
+
+    🤖 AI advertisement generation will be connected here.
+  `;
+}
