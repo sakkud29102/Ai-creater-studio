@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,11 +42,7 @@
         Start Creating Free
       </button>
 
-      <button
-        type="button"
-        class="secondary"
-        onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})"
-      >
+      <button type="button" class="secondary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">
         Explore Tools
       </button>
     </div>
@@ -72,7 +69,6 @@
 
 </main>
 
-
 <section class="dashboard" id="tools">
 
   <div class="dashboard-header">
@@ -91,19 +87,16 @@
 
   </div>
 
-
   <div class="dashboard-grid">
 
     <div class="dashboard-tool">
       <div class="tool-icon">✍️</div>
       <h3>AI Script Creator</h3>
       <p>Generate engaging YouTube scripts from any idea.</p>
-      <button type="button"
-        onclick="document.getElementById('script-generator').scrollIntoView({behavior:'smooth'})">
+      <button type="button" onclick="document.getElementById('script-generator').scrollIntoView({behavior:'smooth'})">
         Open Tool
       </button>
     </div>
-
 
     <div class="dashboard-tool">
       <div class="tool-icon">🖼️</div>
@@ -112,14 +105,12 @@
       <button type="button">Open Tool</button>
     </div>
 
-
     <div class="dashboard-tool">
       <div class="tool-icon">🎙️</div>
       <h3>AI Voice</h3>
       <p>Turn your scripts into natural voiceovers.</p>
       <button type="button">Open Tool</button>
     </div>
-
 
     <div class="dashboard-tool">
       <div class="tool-icon">🎬</div>
@@ -128,14 +119,12 @@
       <button type="button">Open Tool</button>
     </div>
 
-
     <div class="dashboard-tool">
       <div class="tool-icon">🎥</div>
       <h3>Long Video</h3>
       <p>Create 16:9 YouTube videos up to 8–10 minutes.</p>
       <button type="button">Open Tool</button>
     </div>
-
 
     <div class="dashboard-tool">
       <div class="tool-icon">🖼️</div>
@@ -144,14 +133,12 @@
       <button type="button">Open Tool</button>
     </div>
 
-
     <div class="dashboard-tool">
       <div class="tool-icon">🔍</div>
       <h3>YouTube SEO</h3>
       <p>Generate titles, descriptions and keywords.</p>
       <button type="button">Open Tool</button>
     </div>
-
 
     <div class="dashboard-tool">
       <div class="tool-icon">🤖</div>
@@ -160,13 +147,11 @@
       <button type="button">Open Tool</button>
     </div>
 
-
     <div class="dashboard-tool">
       <div class="tool-icon">📢</div>
       <h3>AI Ads Creator</h3>
       <p>Create professional advertisements for products and services.</p>
-      <button type="button"
-        onclick="document.getElementById('ads-generator').scrollIntoView({behavior:'smooth'})">
+      <button type="button" onclick="document.getElementById('ads-generator').scrollIntoView({behavior:'smooth'})">
         Open Tool
       </button>
     </div>
@@ -174,7 +159,6 @@
   </div>
 
 </section>
-
 
 <section class="script-tool" id="script-generator">
 
@@ -190,7 +174,6 @@
 
   </div>
 
-
   <div class="script-box">
 
     <label for="topic">Video Topic</label>
@@ -199,7 +182,6 @@
       id="topic"
       placeholder="Example: Why interest rates make some people rich..."
     ></textarea>
-
 
     <div class="script-options">
 
@@ -212,7 +194,6 @@
         </select>
       </div>
 
-
       <div>
         <label for="language">Language</label>
 
@@ -223,7 +204,6 @@
           <option>Arabic</option>
         </select>
       </div>
-
 
       <div>
         <label for="style">Style</label>
@@ -238,16 +218,13 @@
 
     </div>
 
-
     <button
       type="button"
       class="generate-btn"
-      id="generateScriptBtn"
       onclick="generateScript()"
     >
       ✨ Generate Script
     </button>
-
 
     <div id="result" class="script-result">
       Your generated script will appear here.
@@ -256,7 +233,6 @@
   </div>
 
 </section>
-
 
 <section class="script-tool" id="ads-generator">
 
@@ -272,7 +248,6 @@
 
   </div>
 
-
   <div class="script-box">
 
     <label for="adProduct">Product / Service</label>
@@ -281,7 +256,6 @@
       id="adProduct"
       placeholder="Example: Affordable men's winter jackets..."
     ></textarea>
-
 
     <div class="script-options">
 
@@ -297,7 +271,6 @@
         </select>
       </div>
 
-
       <div>
         <label for="adPlatform">Platform</label>
 
@@ -308,7 +281,6 @@
           <option>TikTok</option>
         </select>
       </div>
-
 
       <div>
         <label for="adDuration">Ad Duration</label>
@@ -321,7 +293,6 @@
       </div>
 
     </div>
-
 
     <div class="script-options">
 
@@ -339,7 +310,6 @@
 
     </div>
 
-
     <button
       type="button"
       class="generate-btn"
@@ -347,7 +317,6 @@
     >
       🚀 Generate Advertisement
     </button>
-
 
     <div id="adResult" class="script-result">
       Your AI advertisement will appear here.
@@ -357,169 +326,7 @@
 
 </section>
 
-
-<script>
-
-async function generateScript() {
-
-  const topic = document.getElementById("topic").value.trim();
-  const videoType = document.getElementById("videoType").value;
-  const language = document.getElementById("language").value;
-  const style = document.getElementById("style").value;
-
-  const result = document.getElementById("result");
-  const button = document.getElementById("generateScriptBtn");
-
-  if (!topic) {
-    result.innerHTML = "❌ Please enter a video topic.";
-    return;
-  }
-
-  button.disabled = true;
-  button.innerText = "⏳ Generating...";
-  result.innerHTML = "🤖 AI is creating your script...";
-
-  try {
-
-    const response = await fetch("/api/generate", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify({
-        topic: topic,
-        videoType: videoType,
-        language: language,
-        style: style
-      })
-    });
-
-
-    const data = await response.json();
-
-
-    if (!response.ok) {
-      throw new Error(data.error || "Something went wrong.");
-    }
-
-
-    if (!data.script) {
-      throw new Error("No script was returned by the AI.");
-    }
-
-
-    result.innerHTML = "";
-
-    const title = document.createElement("h3");
-    title.innerText = "✨ Your Generated Script";
-
-    const content = document.createElement("div");
-    content.style.whiteSpace = "pre-wrap";
-    content.innerText = data.script;
-
-    result.appendChild(title);
-    result.appendChild(content);
-
-
-  } catch (error) {
-
-    result.innerHTML =
-      "❌ Error: " + error.message +
-      "<br><br>Please try again.";
-
-  }
-
-
-  button.disabled = false;
-  button.innerText = "✨ Generate Script";
-}
-
-
-async function generateAd() {
-
-  const product = document.getElementById("adProduct").value.trim();
-  const audience = document.getElementById("adAudience").value;
-  const platform = document.getElementById("adPlatform").value;
-  const duration = document.getElementById("adDuration").value;
-  const style = document.getElementById("adStyle").value;
-
-  const result = document.getElementById("adResult");
-
-  if (!product) {
-    result.innerHTML = "❌ Please enter a product or service.";
-    return;
-  }
-
-  result.innerHTML = "🤖 AI is creating your advertisement...";
-
-  try {
-
-    const response = await fetch("/api/generate", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify({
-        topic:
-          "Create a professional advertisement for: " +
-          product +
-          ". Target audience: " +
-          audience +
-          ". Platform: " +
-          platform +
-          ". Duration: " +
-          duration +
-          ". Style: " +
-          style +
-          ".",
-        videoType: "Advertisement",
-        language: "English",
-        style: style
-      })
-    });
-
-
-    const data = await response.json();
-
-
-    if (!response.ok) {
-      throw new Error(data.error || "Something went wrong.");
-    }
-
-
-    if (!data.script) {
-      throw new Error("No advertisement was returned by the AI.");
-    }
-
-
-    result.innerHTML = "";
-
-    const title = document.createElement("h3");
-    title.innerText = "🚀 Your AI Advertisement";
-
-    const content = document.createElement("div");
-    content.style.whiteSpace = "pre-wrap";
-    content.innerText = data.script;
-
-    result.appendChild(title);
-    result.appendChild(content);
-
-
-  } catch (error) {
-
-    result.innerHTML =
-      "❌ Error: " + error.message +
-      "<br><br>Please try again.";
-
-  }
-
-}
-
-</script>
+<script src="/Script-js"></script>
 
 </body>
 </html>
