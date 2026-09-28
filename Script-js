@@ -235,3 +235,58 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+// ===============================
+// LOGOUT BUTTON
+// ===============================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const loginSection = document.getElementById("login");
+
+  if (!loginSection) return;
+
+  const loginButton = loginSection.querySelector("button");
+
+  if (!loginButton) return;
+
+  function addLogoutButton() {
+
+    if (document.getElementById("logoutButton")) return;
+
+    const logoutButton = document.createElement("button");
+
+    logoutButton.id = "logoutButton";
+    logoutButton.textContent = "Log Out";
+
+    logoutButton.style.width = "100%";
+    logoutButton.style.padding = "14px";
+    logoutButton.style.marginTop = "12px";
+    logoutButton.style.background = "#ef4444";
+    logoutButton.style.color = "white";
+    logoutButton.style.border = "0";
+    logoutButton.style.borderRadius = "10px";
+    logoutButton.style.fontSize = "16px";
+    logoutButton.style.fontWeight = "bold";
+    logoutButton.style.cursor = "pointer";
+
+    logoutButton.addEventListener("click", function () {
+      localStorage.removeItem("aiCreatorUser");
+      location.reload();
+    });
+
+    loginButton.parentElement.appendChild(logoutButton);
+  }
+
+  if (localStorage.getItem("aiCreatorUser")) {
+    addLogoutButton();
+  }
+
+  loginButton.addEventListener("click", function () {
+    setTimeout(function () {
+      if (localStorage.getItem("aiCreatorUser")) {
+        addLogoutButton();
+      }
+    }, 100);
+  });
+
+});
