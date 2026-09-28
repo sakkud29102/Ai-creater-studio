@@ -138,3 +138,100 @@ ${product} — Make your next move smarter.
 
   }, 1000);
 }
+// ===============================
+// DEMO LOGIN SYSTEM
+// ===============================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const loginSection = document.getElementById("login");
+
+  if (!loginSection) return;
+
+  const inputs = loginSection.querySelectorAll("input");
+  const loginButton = loginSection.querySelector("button");
+  const createAccount = loginSection.querySelector("span");
+
+  if (!inputs.length || !loginButton) return;
+
+  const emailInput = inputs[0];
+  const passwordInput = inputs[1];
+
+  // Check existing demo login
+  const savedEmail = localStorage.getItem("aiCreatorUser");
+
+  if (savedEmail) {
+    loginButton.textContent = "✓ Logged In";
+
+    loginButton.style.background = "#22c55e";
+
+    const message = document.createElement("p");
+    message.id = "loginMessage";
+    message.style.color = "#22c55e";
+    message.style.textAlign = "center";
+    message.style.marginTop = "15px";
+    message.innerHTML = "✓ Welcome back, " + savedEmail;
+
+    loginButton.parentElement.appendChild(message);
+  }
+
+  // Sign In
+  loginButton.addEventListener("click", function () {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      alert("Please enter your email and password.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    // Demo login session
+    localStorage.setItem("aiCreatorUser", email);
+
+    loginButton.textContent = "✓ Logged In";
+    loginButton.style.background = "#22c55e";
+
+    let message = document.getElementById("loginMessage");
+
+    if (!message) {
+      message = document.createElement("p");
+      message.id = "loginMessage";
+      message.style.color = "#22c55e";
+      message.style.textAlign = "center";
+      message.style.marginTop = "15px";
+      loginButton.parentElement.appendChild(message);
+    }
+
+    message.innerHTML = "✓ Welcome, " + email;
+
+    passwordInput.value = "";
+  });
+
+  // Create Account
+  if (createAccount) {
+
+    createAccount.addEventListener("click", function () {
+
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        alert("Enter your email first to create an account.");
+        return;
+      }
+
+      localStorage.setItem("aiCreatorUser", email);
+
+      alert("🎉 Demo account created successfully!");
+
+      loginButton.textContent = "✓ Logged In";
+      loginButton.style.background = "#22c55e";
+    });
+  }
+
+});
