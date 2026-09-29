@@ -294,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // USER DASHBOARD WELCOME
 // ===============================
 
-document.addEventListener("DOMContentLoaded", function () {
+{
 
   const email = localStorage.getItem("aiCreatorUser");
   const dashboard = document.getElementById("tools");
@@ -321,4 +321,4 @@ document.addEventListener("DOMContentLoaded", function () {
     dashboardTitle.nextSibling
   );
 
-});
+}
