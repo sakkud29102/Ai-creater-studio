@@ -138,6 +138,8 @@ ${product} — Make your next move smarter.
 
   }, 1000);
 }
+
+
 // ===============================
 // DEMO LOGIN SYSTEM
 // ===============================
@@ -145,6 +147,7 @@ ${product} — Make your next move smarter.
 document.addEventListener("DOMContentLoaded", function () {
 
   const loginSection = document.getElementById("login");
+  const dashboard = document.getElementById("tools");
 
   if (!loginSection) return;
 
@@ -157,25 +160,81 @@ document.addEventListener("DOMContentLoaded", function () {
   const emailInput = inputs[0];
   const passwordInput = inputs[1];
 
-  // Check existing demo login
+
+  // ===============================
+  // DASHBOARD WELCOME
+  // ===============================
+
+  function showDashboardWelcome() {
+
+    const savedEmail = localStorage.getItem("aiCreatorUser");
+
+    if (!savedEmail || !dashboard) return;
+
+    const dashboardTitle = dashboard.querySelector("h2");
+
+    if (!dashboardTitle) return;
+
+    let welcome = document.getElementById("userWelcome");
+
+    if (!welcome) {
+
+      welcome = document.createElement("p");
+
+      welcome.id = "userWelcome";
+
+      welcome.style.color = "#38bdf8";
+      welcome.style.fontSize = "16px";
+      welcome.style.marginTop = "10px";
+
+      dashboardTitle.parentElement.insertBefore(
+        welcome,
+        dashboardTitle.nextSibling
+      );
+    }
+
+    welcome.innerHTML =
+      "👋 Welcome back, <strong>" + savedEmail + "</strong>";
+  }
+
+
+  // ===============================
+  // CHECK EXISTING LOGIN
+  // ===============================
+
   const savedEmail = localStorage.getItem("aiCreatorUser");
 
   if (savedEmail) {
+
     loginButton.textContent = "✓ Logged In";
 
     loginButton.style.background = "#22c55e";
 
-    const message = document.createElement("p");
-    message.id = "loginMessage";
-    message.style.color = "#22c55e";
-    message.style.textAlign = "center";
-    message.style.marginTop = "15px";
+    let message = document.getElementById("loginMessage");
+
+    if (!message) {
+
+      message = document.createElement("p");
+
+      message.id = "loginMessage";
+
+      message.style.color = "#22c55e";
+      message.style.textAlign = "center";
+      message.style.marginTop = "15px";
+
+      loginButton.parentElement.appendChild(message);
+    }
+
     message.innerHTML = "✓ Welcome back, " + savedEmail;
 
-    loginButton.parentElement.appendChild(message);
+    showDashboardWelcome();
   }
 
-  // Sign In
+
+  // ===============================
+  // SIGN IN
+  // ===============================
+
   loginButton.addEventListener("click", function () {
 
     const email = emailInput.value.trim();
@@ -191,7 +250,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Demo login session
     localStorage.setItem("aiCreatorUser", email);
 
     loginButton.textContent = "✓ Logged In";
@@ -200,20 +258,30 @@ document.addEventListener("DOMContentLoaded", function () {
     let message = document.getElementById("loginMessage");
 
     if (!message) {
+
       message = document.createElement("p");
+
       message.id = "loginMessage";
+
       message.style.color = "#22c55e";
       message.style.textAlign = "center";
       message.style.marginTop = "15px";
+
       loginButton.parentElement.appendChild(message);
     }
 
     message.innerHTML = "✓ Welcome, " + email;
 
     passwordInput.value = "";
+
+    showDashboardWelcome();
   });
 
-  // Create Account
+
+  // ===============================
+  // CREATE ACCOUNT
+  // ===============================
+
   if (createAccount) {
 
     createAccount.addEventListener("click", function () {
@@ -230,24 +298,17 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("🎉 Demo account created successfully!");
 
       loginButton.textContent = "✓ Logged In";
+
       loginButton.style.background = "#22c55e";
+
+      showDashboardWelcome();
     });
   }
 
-});
-// ===============================
-// LOGOUT BUTTON
-// ===============================
 
-document.addEventListener("DOMContentLoaded", function () {
-
-  const loginSection = document.getElementById("login");
-
-  if (!loginSection) return;
-
-  const loginButton = loginSection.querySelector("button");
-
-  if (!loginButton) return;
+  // ===============================
+  // LOGOUT BUTTON
+  // ===============================
 
   function addLogoutButton() {
 
@@ -256,6 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const logoutButton = document.createElement("button");
 
     logoutButton.id = "logoutButton";
+
     logoutButton.textContent = "Log Out";
 
     logoutButton.style.width = "100%";
@@ -270,51 +332,32 @@ document.addEventListener("DOMContentLoaded", function () {
     logoutButton.style.cursor = "pointer";
 
     logoutButton.addEventListener("click", function () {
+
       localStorage.removeItem("aiCreatorUser");
+
       location.reload();
+
     });
 
     loginButton.parentElement.appendChild(logoutButton);
   }
 
+
   if (localStorage.getItem("aiCreatorUser")) {
     addLogoutButton();
   }
 
+
   loginButton.addEventListener("click", function () {
+
     setTimeout(function () {
+
       if (localStorage.getItem("aiCreatorUser")) {
         addLogoutButton();
       }
+
     }, 100);
+
   });
 
 });
-// ===============================
-// USER DASHBOARD WELCOME
-// ===============================
-
-const email = localStorage.getItem("aiCreatorUser");
-const dashboard = document.getElementById("tools");
-
-if (email && dashboard) {
-
-  const dashboardTitle = dashboard.querySelector("h2");
-
-  if (dashboardTitle && !document.getElementById("userWelcome")) {
-
-    const welcome = document.createElement("p");
-
-    welcome.id = "userWelcome";
-    welcome.innerHTML = "👋 Welcome back, <strong>" + email + "</strong>";
-
-    welcome.style.color = "#38bdf8";
-    welcome.style.fontSize = "16px";
-    welcome.style.marginTop = "10px";
-
-    dashboardTitle.parentElement.insertBefore(
-      welcome,
-      dashboardTitle.nextSibling
-    );
-  }
-}
