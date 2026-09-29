@@ -294,31 +294,27 @@ document.addEventListener("DOMContentLoaded", function () {
 // USER DASHBOARD WELCOME
 // ===============================
 
-{
+const email = localStorage.getItem("aiCreatorUser");
+const dashboard = document.getElementById("tools");
 
-  const email = localStorage.getItem("aiCreatorUser");
-  const dashboard = document.getElementById("tools");
-
-  if (!email || !dashboard) return;
+if (email && dashboard) {
 
   const dashboardTitle = dashboard.querySelector("h2");
 
-  if (!dashboardTitle) return;
+  if (dashboardTitle && !document.getElementById("userWelcome")) {
 
-  if (document.getElementById("userWelcome")) return;
+    const welcome = document.createElement("p");
 
-  const welcome = document.createElement("p");
+    welcome.id = "userWelcome";
+    welcome.innerHTML = "👋 Welcome back, <strong>" + email + "</strong>";
 
-  welcome.id = "userWelcome";
-  welcome.innerHTML = "👋 Welcome back, <strong>" + email + "</strong>";
+    welcome.style.color = "#38bdf8";
+    welcome.style.fontSize = "16px";
+    welcome.style.marginTop = "10px";
 
-  welcome.style.color = "#38bdf8";
-  welcome.style.fontSize = "16px";
-  welcome.style.marginTop = "10px";
-
-  dashboardTitle.parentElement.insertBefore(
-    welcome,
-    dashboardTitle.nextSibling
-  );
-
+    dashboardTitle.parentElement.insertBefore(
+      welcome,
+      dashboardTitle.nextSibling
+    );
+  }
 }
