@@ -1,46 +1,263 @@
-async function generateScript() {
-  const topic = document.getElementById("topic").value;
-  const videoType = document.getElementById("videoType").value;
-  const language = document.getElementById("language").value;
-  const style = document.getElementById("style").value;
-  const result = document.getElementById("result");
+// ===============================
+// RECENT PROJECTS SYSTEM
+// ===============================
 
-  if (!topic.trim()) {
-    result.innerHTML = "⚠️ Please enter a video topic first.";
+function saveRecentProject(type, title) {
+
+  let projects =
+    JSON.parse(localStorage.getItem("aiCreatorProjects")) || [];
+
+  const newProject = {
+    type: type,
+    title: title,
+    date: new Date().toLocaleString()
+  };
+
+  projects.unshift(newProject);
+
+  // Sirf latest 5 projects rakho
+  projects = projects.slice(0, 5);
+
+  localStorage.setItem(
+    "aiCreatorProjects",
+    JSON.stringify(projects)
+  );
+
+  renderRecentProjects();
+}
+
+
+// ===============================
+// RENDER RECENT PROJECTS
+// ===============================
+
+function renderRecentProjects() {
+
+  const dashboard = document.getElementById("tools");
+
+  if (!dashboard) return;
+
+  const allElements = dashboard.querySelectorAll("*");
+
+  let heading = null;
+  let emptyText = null;
+
+  allElements.forEach(function (element) {
+
+    const text = element.textContent.trim();
+
+    if (text === "🕘 Recent Projects") {
+      heading = element;
+    }
+
+    if (text === "Your latest creations will appear here.") {
+      emptyText = element;
+    }
+  });
+
+  if (!heading) return;
+
+  const parent = heading.parentElement;
+
+  if (!parent) return;
+
+
+  // Hide old static project items
+  allElements.forEach(function (element) {
+
+    const text = element.textContent.trim();
+
+    if (
+      text === "🎬 YouTube Script" ||
+      text === "📢 Advertisement"
+    ) {
+      element.style.display = "none";
+    }
+
+  });
+
+
+  // Hide old empty message
+  if (emptyText) {
+    emptyText.style.display = "none";
+  }
+
+
+  // Create projects container
+  let projectList =
+    document.getElementById("recentProjectsList");
+
+  if (!projectList) {
+
+    projectList = document.createElement("div");
+
+    projectList.id = "recentProjectsList";
+
+    projectList.style.marginTop = "15px";
+
+    parent.appendChild(projectList);
+  }
+
+
+  const projects =
+    JSON.parse(localStorage.getItem("aiCreatorProjects")) || [];
+
+
+  if (projects.length === 0) {
+
+    projectList.innerHTML = `
+      <div style="
+        padding:15px;
+        border-radius:12px;
+        background:rgba(255,255,255,0.04);
+        color:#94a3b8;
+      ">
+        Your latest creations will appear here.
+      </div>
+    `;
+
     return;
   }
 
-  result.innerHTML = "🤖 Creating your script...";
+
+  projectList.innerHTML = projects.map(function (project) {
+
+    return `
+      <div style="
+        padding:15px;
+        margin-bottom:10px;
+        border-radius:12px;
+        background:rgba(255,255,255,0.05);
+        border:1px solid rgba(255,255,255,0.08);
+      ">
+
+        <div style="
+          font-weight:bold;
+          color:#ffffff;
+          margin-bottom:6px;
+        ">
+          ${escapeHTML(project.type)}
+        </div>
+
+        <div style="
+          color:#cbd5e1;
+          font-size:14px;
+          margin-bottom:6px;
+        ">
+          ${escapeHTML(project.title)}
+        </div>
+
+        <div style="
+          color:#64748b;
+          font-size:12px;
+        ">
+          ${escapeHTML(project.date)}
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+
+// ===============================
+// SAFE TEXT
+// ===============================
+
+function escapeHTML(text) {
+
+  const div = document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+
+// ===============================
+// AI SCRIPT GENERATOR
+// ===============================
+
+async function generateScript() {
+
+  const topic =
+    document.getElementById("topic").value;
+
+  const videoType =
+    document.getElementById("videoType").value;
+
+  const language =
+    document.getElementById("language").value;
+
+  const style =
+    document.getElementById("style").value;
+
+  const result =
+    document.getElementById("result");
+
+
+  if (!topic.trim()) {
+
+    result.innerHTML =
+      "⚠️ Please enter a video topic first.";
+
+    return;
+  }
+
+
+  result.innerHTML =
+    "🤖 Creating your script...";
+
 
   setTimeout(() => {
 
     let intro = "";
 
+
     if (language === "Urdu") {
+
       intro = `Aaj hum baat karenge "${topic}" ke baare mein.
 
 Ye topic pehli nazar mein simple lag sakta hai, lekin iske peeche ek interesting story chhupi hui hai.
 
 Sab se pehle samajhte hain ke asal mein hota kya hai...`;
-    } else if (language === "Hindi") {
+
+    }
+
+
+    else if (language === "Hindi") {
+
       intro = `Aaj hum baat karenge "${topic}" ke baare mein.
 
 Ye topic pehli nazar mein simple lag sakta hai, lekin iske peeche ek interesting story chhupi hui hai.
 
 Sabse pehle samajhte hain ki asal mein hota kya hai...`;
-    } else if (language === "Arabic") {
+
+    }
+
+
+    else if (language === "Arabic") {
+
       intro = `اليوم سنتحدث عن "${topic}".
 
 قد يبدو هذا الموضوع بسيطًا، لكن وراءه قصة مثيرة للاهتمام.
 
 لنبدأ بفهم ما يحدث بالفعل...`;
-    } else {
+
+    }
+
+
+    else {
+
       intro = `Today, we're looking at "${topic}".
 
 At first glance, this topic may seem simple. But behind it is a much more interesting story.
 
 So let's start by understanding what is really happening...`;
+
     }
+
 
     const script = `
 🎬 ${videoType} Script
@@ -60,29 +277,61 @@ So stay with the story, because the most interesting part is still ahead.
 [AI Creator Studio Demo Mode]
 `;
 
+
     result.innerHTML = `
       <strong>✨ Your AI Script</strong><br><br>
       ${script.replace(/\n/g, "<br>")}
     `;
 
+
+    // Save project
+    saveRecentProject(
+      "🎬 YouTube Script",
+      topic
+    );
+
+
   }, 1000);
 }
 
 
+// ===============================
+// AI AD GENERATOR
+// ===============================
+
 function generateAd() {
-  const product = document.getElementById("adProduct").value;
-  const audience = document.getElementById("adAudience").value;
-  const platform = document.getElementById("adPlatform").value;
-  const duration = document.getElementById("adDuration").value;
-  const style = document.getElementById("adStyle").value;
-  const result = document.getElementById("adResult");
+
+  const product =
+    document.getElementById("adProduct").value;
+
+  const audience =
+    document.getElementById("adAudience").value;
+
+  const platform =
+    document.getElementById("adPlatform").value;
+
+  const duration =
+    document.getElementById("adDuration").value;
+
+  const style =
+    document.getElementById("adStyle").value;
+
+  const result =
+    document.getElementById("adResult");
+
 
   if (!product.trim()) {
-    result.innerHTML = "⚠️ Please enter your product or service first.";
+
+    result.innerHTML =
+      "⚠️ Please enter your product or service first.";
+
     return;
   }
 
-  result.innerHTML = "📢 Creating your advertisement...";
+
+  result.innerHTML =
+    "📢 Creating your advertisement...";
+
 
   setTimeout(() => {
 
@@ -131,10 +380,19 @@ Try ${product} today and see the difference for yourself.
 ${product} — Make your next move smarter.
 `;
 
+
     result.innerHTML = `
       <strong>✨ Your AI Advertisement</strong><br><br>
       ${ad.replace(/\n/g, "<br>")}
     `;
+
+
+    // Save project
+    saveRecentProject(
+      "📢 Advertisement",
+      product
+    );
+
 
   }, 1000);
 }
@@ -146,18 +404,31 @@ ${product} — Make your next move smarter.
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const loginSection = document.getElementById("login");
-  const dashboard = document.getElementById("tools");
+  const loginSection =
+    document.getElementById("login");
+
+  const dashboard =
+    document.getElementById("tools");
+
 
   if (!loginSection) return;
 
-  const inputs = loginSection.querySelectorAll("input");
-  const loginButton = loginSection.querySelector("button");
-  const createAccount = loginSection.querySelector("span");
+
+  const inputs =
+    loginSection.querySelectorAll("input");
+
+  const loginButton =
+    loginSection.querySelector("button");
+
+  const createAccount =
+    loginSection.querySelector("span");
+
 
   if (!inputs.length || !loginButton) return;
 
+
   const emailInput = inputs[0];
+
   const passwordInput = inputs[1];
 
 
@@ -167,25 +438,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function showDashboardWelcome() {
 
-    const savedEmail = localStorage.getItem("aiCreatorUser");
+    const savedEmail =
+      localStorage.getItem("aiCreatorUser");
+
 
     if (!savedEmail || !dashboard) return;
 
-    const dashboardTitle = dashboard.querySelector("h2");
+
+    const dashboardTitle =
+      dashboard.querySelector("h2");
+
 
     if (!dashboardTitle) return;
 
-    let welcome = document.getElementById("userWelcome");
+
+    let welcome =
+      document.getElementById("userWelcome");
+
 
     if (!welcome) {
 
-      welcome = document.createElement("p");
+      welcome =
+        document.createElement("p");
 
-      welcome.id = "userWelcome";
+      welcome.id =
+        "userWelcome";
 
-      welcome.style.color = "#38bdf8";
-      welcome.style.fontSize = "16px";
-      welcome.style.marginTop = "10px";
+      welcome.style.color =
+        "#38bdf8";
+
+      welcome.style.fontSize =
+        "16px";
+
+      welcome.style.marginTop =
+        "10px";
+
 
       dashboardTitle.parentElement.insertBefore(
         welcome,
@@ -193,8 +480,11 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     }
 
+
     welcome.innerHTML =
-      "👋 Welcome back, <strong>" + savedEmail + "</strong>";
+      "👋 Welcome back, <strong>" +
+      savedEmail +
+      "</strong>";
   }
 
 
@@ -202,30 +492,51 @@ document.addEventListener("DOMContentLoaded", function () {
   // CHECK EXISTING LOGIN
   // ===============================
 
-  const savedEmail = localStorage.getItem("aiCreatorUser");
+  const savedEmail =
+    localStorage.getItem("aiCreatorUser");
+
 
   if (savedEmail) {
 
-    loginButton.textContent = "✓ Logged In";
+    loginButton.textContent =
+      "✓ Logged In";
 
-    loginButton.style.background = "#22c55e";
+    loginButton.style.background =
+      "#22c55e";
 
-    let message = document.getElementById("loginMessage");
+
+    let message =
+      document.getElementById("loginMessage");
+
 
     if (!message) {
 
-      message = document.createElement("p");
+      message =
+        document.createElement("p");
 
-      message.id = "loginMessage";
+      message.id =
+        "loginMessage";
 
-      message.style.color = "#22c55e";
-      message.style.textAlign = "center";
-      message.style.marginTop = "15px";
+      message.style.color =
+        "#22c55e";
 
-      loginButton.parentElement.appendChild(message);
+      message.style.textAlign =
+        "center";
+
+      message.style.marginTop =
+        "15px";
+
+
+      loginButton.parentElement.appendChild(
+        message
+      );
     }
 
-    message.innerHTML = "✓ Welcome back, " + savedEmail;
+
+    message.innerHTML =
+      "✓ Welcome back, " +
+      savedEmail;
+
 
     showDashboardWelcome();
   }
@@ -235,47 +546,89 @@ document.addEventListener("DOMContentLoaded", function () {
   // SIGN IN
   // ===============================
 
-  loginButton.addEventListener("click", function () {
+  loginButton.addEventListener(
+    "click",
+    function () {
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+      const email =
+        emailInput.value.trim();
 
-    if (!email || !password) {
-      alert("Please enter your email and password.");
-      return;
+      const password =
+        passwordInput.value.trim();
+
+
+      if (!email || !password) {
+
+        alert(
+          "Please enter your email and password."
+        );
+
+        return;
+      }
+
+
+      if (!email.includes("@")) {
+
+        alert(
+          "Please enter a valid email address."
+        );
+
+        return;
+      }
+
+
+      localStorage.setItem(
+        "aiCreatorUser",
+        email
+      );
+
+
+      loginButton.textContent =
+        "✓ Logged In";
+
+      loginButton.style.background =
+        "#22c55e";
+
+
+      let message =
+        document.getElementById("loginMessage");
+
+
+      if (!message) {
+
+        message =
+          document.createElement("p");
+
+        message.id =
+          "loginMessage";
+
+        message.style.color =
+          "#22c55e";
+
+        message.style.textAlign =
+          "center";
+
+        message.style.marginTop =
+          "15px";
+
+
+        loginButton.parentElement.appendChild(
+          message
+        );
+      }
+
+
+      message.innerHTML =
+        "✓ Welcome, " +
+        email;
+
+
+      passwordInput.value = "";
+
+
+      showDashboardWelcome();
     }
-
-    if (!email.includes("@")) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-
-    localStorage.setItem("aiCreatorUser", email);
-
-    loginButton.textContent = "✓ Logged In";
-    loginButton.style.background = "#22c55e";
-
-    let message = document.getElementById("loginMessage");
-
-    if (!message) {
-
-      message = document.createElement("p");
-
-      message.id = "loginMessage";
-
-      message.style.color = "#22c55e";
-      message.style.textAlign = "center";
-      message.style.marginTop = "15px";
-
-      loginButton.parentElement.appendChild(message);
-    }
-
-    message.innerHTML = "✓ Welcome, " + email;
-
-    passwordInput.value = "";
-
-    showDashboardWelcome();
-  });
+  );
 
 
   // ===============================
@@ -284,25 +637,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (createAccount) {
 
-    createAccount.addEventListener("click", function () {
+    createAccount.addEventListener(
+      "click",
+      function () {
 
-      const email = emailInput.value.trim();
+        const email =
+          emailInput.value.trim();
 
-      if (!email) {
-        alert("Enter your email first to create an account.");
-        return;
+
+        if (!email) {
+
+          alert(
+            "Enter your email first to create an account."
+          );
+
+          return;
+        }
+
+
+        localStorage.setItem(
+          "aiCreatorUser",
+          email
+        );
+
+
+        alert(
+          "🎉 Demo account created successfully!"
+        );
+
+
+        loginButton.textContent =
+          "✓ Logged In";
+
+
+        loginButton.style.background =
+          "#22c55e";
+
+
+        showDashboardWelcome();
       }
-
-      localStorage.setItem("aiCreatorUser", email);
-
-      alert("🎉 Demo account created successfully!");
-
-      loginButton.textContent = "✓ Logged In";
-
-      loginButton.style.background = "#22c55e";
-
-      showDashboardWelcome();
-    });
+    );
   }
 
 
@@ -312,52 +686,104 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function addLogoutButton() {
 
-    if (document.getElementById("logoutButton")) return;
+    if (
+      document.getElementById("logoutButton")
+    ) return;
 
-    const logoutButton = document.createElement("button");
 
-    logoutButton.id = "logoutButton";
+    const logoutButton =
+      document.createElement("button");
 
-    logoutButton.textContent = "Log Out";
 
-    logoutButton.style.width = "100%";
-    logoutButton.style.padding = "14px";
-    logoutButton.style.marginTop = "12px";
-    logoutButton.style.background = "#ef4444";
-    logoutButton.style.color = "white";
-    logoutButton.style.border = "0";
-    logoutButton.style.borderRadius = "10px";
-    logoutButton.style.fontSize = "16px";
-    logoutButton.style.fontWeight = "bold";
-    logoutButton.style.cursor = "pointer";
+    logoutButton.id =
+      "logoutButton";
 
-    logoutButton.addEventListener("click", function () {
 
-      localStorage.removeItem("aiCreatorUser");
+    logoutButton.textContent =
+      "Log Out";
 
-      location.reload();
 
-    });
+    logoutButton.style.width =
+      "100%";
 
-    loginButton.parentElement.appendChild(logoutButton);
+    logoutButton.style.padding =
+      "14px";
+
+    logoutButton.style.marginTop =
+      "12px";
+
+    logoutButton.style.background =
+      "#ef4444";
+
+    logoutButton.style.color =
+      "white";
+
+    logoutButton.style.border =
+      "0";
+
+    logoutButton.style.borderRadius =
+      "10px";
+
+    logoutButton.style.fontSize =
+      "16px";
+
+    logoutButton.style.fontWeight =
+      "bold";
+
+    logoutButton.style.cursor =
+      "pointer";
+
+
+    logoutButton.addEventListener(
+      "click",
+      function () {
+
+        localStorage.removeItem(
+          "aiCreatorUser"
+        );
+
+        location.reload();
+      }
+    );
+
+
+    loginButton.parentElement.appendChild(
+      logoutButton
+    );
   }
 
 
-  if (localStorage.getItem("aiCreatorUser")) {
+  if (
+    localStorage.getItem("aiCreatorUser")
+  ) {
+
     addLogoutButton();
   }
 
 
-  loginButton.addEventListener("click", function () {
+  loginButton.addEventListener(
+    "click",
+    function () {
 
-    setTimeout(function () {
+      setTimeout(function () {
 
-      if (localStorage.getItem("aiCreatorUser")) {
-        addLogoutButton();
-      }
+        if (
+          localStorage.getItem("aiCreatorUser")
+        ) {
 
-    }, 100);
+          addLogoutButton();
+        }
 
-  });
+      }, 100);
+
+    }
+  );
+
+
+  // ===============================
+  // LOAD RECENT PROJECTS
+  // ===============================
+
+  renderRecentProjects();
 
 });
