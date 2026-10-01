@@ -787,3 +787,153 @@ document.addEventListener("DOMContentLoaded", function () {
   renderRecentProjects();
 
 });
+// ===============================
+// DYNAMIC CREDITS SYSTEM
+// ===============================
+
+function getCredits() {
+  let credits = localStorage.getItem("aiCreatorCredits");
+
+  if (credits === null) {
+    credits = 25;
+    localStorage.setItem("aiCreatorCredits", credits);
+  }
+
+  return Number(credits);
+}
+
+
+// ===============================
+// UPDATE CREDIT DISPLAY
+// ===============================
+
+function updateCreditsDisplay() {
+
+  const credits = getCredits();
+
+  const dashboard =
+    document.getElementById("tools");
+
+  if (!dashboard) return;
+
+  const elements =
+    dashboard.querySelectorAll("*");
+
+  elements.forEach(function(element) {
+
+    if (
+      element.children.length === 0 &&
+      element.textContent.includes("Credits")
+    ) {
+      element.textContent =
+        "⚡ " + credits + " Credits";
+    }
+
+  });
+
+  elements.forEach(function(element) {
+
+    if (
+      element.children.length === 0 &&
+      element.textContent.includes("% of your monthly credits used")
+    ) {
+
+      const used = 25 - credits;
+      const percentage = Math.round((used / 25) * 100);
+
+      element.textContent =
+        percentage + "% of your monthly credits used";
+    }
+
+  });
+}
+
+
+// ===============================
+// USE ONE CREDIT
+// ===============================
+
+function useCredit() {
+
+  let credits = getCredits();
+
+  if (credits <= 0) {
+
+    alert(
+      "⚠️ You have no credits left. Please upgrade your plan."
+    );
+
+    return false;
+  }
+
+  credits--;
+
+  localStorage.setItem(
+    "aiCreatorCredits",
+    credits
+  );
+
+  updateCreditsDisplay();
+
+  return true;
+}
+
+
+// ===============================
+// CHECK BEFORE SCRIPT GENERATION
+// ===============================
+
+const originalGenerateScript =
+  window.generateScript;
+
+window.generateScript = function() {
+
+  const topic =
+    document.getElementById("topic")?.value || "";
+
+  if (!topic.trim()) {
+    originalGenerateScript();
+    return;
+  }
+
+  if (!useCredit()) return;
+
+  originalGenerateScript();
+};
+
+
+// ===============================
+// CHECK BEFORE AD GENERATION
+// ===============================
+
+const originalGenerateAd =
+  window.generateAd;
+
+window.generateAd = function() {
+
+  const product =
+    document.getElementById("adProduct")?.value || "";
+
+  if (!product.trim()) {
+    originalGenerateAd();
+    return;
+  }
+
+  if (!useCredit()) return;
+
+  originalGenerateAd();
+};
+
+
+// ===============================
+// LOAD CREDITS
+// ===============================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    updateCreditsDisplay();
+
+  }
+);
