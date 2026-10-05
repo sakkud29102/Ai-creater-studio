@@ -154,7 +154,9 @@
         Create visuals and cinematic images with AI.
       </p>
 
-      <button type="button">
+      <button
+        type="button"
+        onclick="document.getElementById('image-generator').scrollIntoView({behavior:'smooth'})">
         Open Tool
       </button>
 
@@ -498,6 +500,55 @@
     </div>
 
 
+  </div>
+
+</section>
+
+
+<!-- ===============================
+     AI IMAGE GENERATOR
+     =============================== -->
+<section class="script-tool" id="image-generator">
+
+  <div class="script-header">
+    <span class="badge">AI IMAGE GENERATOR</span>
+    <h2>Turn Your Idea Into an Image</h2>
+    <p>Describe the image you want and create a visual preview with AI Creator Studio.</p>
+  </div>
+
+  <div class="script-box">
+    <label for="imagePrompt">Image Prompt</label>
+    <textarea id="imagePrompt" placeholder="Example: A cinematic futuristic city at night, neon lights, rain, ultra detailed..."></textarea>
+
+    <div class="script-options">
+      <div>
+        <label for="imageStyle">Image Style</label>
+        <select id="imageStyle">
+          <option>Cinematic</option>
+          <option>Photorealistic</option>
+          <option>3D Render</option>
+          <option>Anime</option>
+          <option>Illustration</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="imageRatio">Aspect Ratio</label>
+        <select id="imageRatio">
+          <option>16:9</option>
+          <option>1:1</option>
+          <option>9:16</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="button" class="generate-btn" onclick="generateImage()">
+      🖼️ Generate Image
+    </button>
+
+    <div id="imageResult" class="script-result">
+      Your generated image will appear here.
+    </div>
   </div>
 
 </section>
@@ -898,6 +949,57 @@
 
 
 <script src="/Script-js"></script>
+
+<script>
+// ===============================
+// AI IMAGE GENERATOR - DEMO MODE
+// ===============================
+function generateImage() {
+  const prompt = document.getElementById("imagePrompt").value.trim();
+  const style = document.getElementById("imageStyle").value;
+  const ratio = document.getElementById("imageRatio").value;
+  const result = document.getElementById("imageResult");
+
+  if (!prompt) {
+    result.innerHTML = "⚠️ Please enter an image prompt first.";
+    return;
+  }
+
+  if (typeof useCredit === "function" && !useCredit()) return;
+
+  result.innerHTML = "🎨 Creating your image...";
+
+  setTimeout(function() {
+    const safePrompt = escapeImageText(prompt);
+    const safeStyle = escapeImageText(style);
+    const safeRatio = escapeImageText(ratio);
+    const cssRatio = ratio.replace(":", "/");
+
+    result.innerHTML = `
+      <strong>✨ Your AI Image</strong><br><br>
+      <div style="width:100%;max-width:760px;margin:0 auto;aspect-ratio:${cssRatio};min-height:220px;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;box-sizing:border-box;background:radial-gradient(circle at 20% 20%,rgba(56,189,248,.45),transparent 35%),radial-gradient(circle at 80% 70%,rgba(139,92,246,.45),transparent 35%),linear-gradient(135deg,#0f172a,#111827 50%,#020617);border:1px solid rgba(125,211,252,.25);">
+        <div style="color:white;max-width:620px;font-size:20px;font-weight:bold;line-height:1.5;text-shadow:0 2px 12px rgba(0,0,0,.5);">
+          ${safePrompt}
+          <div style="margin-top:12px;font-size:12px;color:#7dd3fc;font-weight:normal;">
+            ${safeStyle} • ${safeRatio} • AI Creator Studio Demo
+          </div>
+        </div>
+      </div>
+      <p style="color:#94a3b8;margin-top:15px;">Demo Mode: connect an image-generation API to create real AI images.</p>
+    `;
+
+    if (typeof saveRecentProject === "function") {
+      saveRecentProject("🖼️ AI Image", prompt);
+    }
+  }, 1000);
+}
+
+function escapeImageText(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+</script>
 
 </body>
 
