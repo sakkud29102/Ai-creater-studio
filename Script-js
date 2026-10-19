@@ -937,3 +937,43 @@ document.addEventListener(
 
   }
 );
+async function generateRealImage() {
+  const promptInput = document.getElementById("imagePrompt");
+  const result = document.getElementById("imageResult");
+
+  if (!promptInput || !promptInput.value.trim()) {
+    alert("Please enter an image prompt.");
+    return;
+  }
+
+  result.innerHTML = "🎨 Creating your real AI image...";
+
+  try {
+    const response = await fetch("/api/generate-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: promptInput.value.trim(),
+        imageSize: "landscape_16_9"
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Image generation failed.");
+    }
+
+    result.innerHTML = `
+      <img
+        src="${data.imageUrl}"
+        alt="AI generated image"
+        style="width:100%;border-radius:12px;"
+      />
+    `;
+  } catch (error) {
+    result.textContent = "⚠️ " + error.message;
+  }
+}
